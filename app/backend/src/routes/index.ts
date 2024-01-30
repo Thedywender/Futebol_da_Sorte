@@ -1,7 +1,7 @@
-import { Router } from 'express';
-
 import teamRouter from './team.routes';
 
-const router = Router();
+export default {
+  teamRouter,
+};
 
-router.use('/teams', teamRouter);
+// export { default as teamRouter } from './team.routes';
