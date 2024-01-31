@@ -1,7 +1,7 @@
 import teamRouter from './team.routes';
+import loginRouter from './login.routes';
 
 export default {
   teamRouter,
+  loginRouter,
 };
-
-// export { default as teamRouter } from './team.routes';
