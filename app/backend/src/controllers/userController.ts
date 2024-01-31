@@ -13,4 +13,9 @@ export default class UserController {
 
     return res.status(statusCode).json(data);
   }
+
+  static async roleToken(_req: Request, res: Response) {
+    const { role } = res.locals.auth;
+    return res.status(200).json({ role });
+  }
 }

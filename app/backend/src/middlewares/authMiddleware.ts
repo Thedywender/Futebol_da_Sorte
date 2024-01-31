@@ -10,7 +10,7 @@ export default class AuthMiddleware {
     const [type, token] = req.headers.authorization.split(' ');
 
     if (type !== 'Bearer') {
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: 'Token must be a valid token' });
     }
 
     try {
@@ -18,7 +18,7 @@ export default class AuthMiddleware {
       const payload = jwt.verify(token, secret);
       res.locals.auth = payload;
     } catch (err) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: 'Token must be a valid token' });
     }
 
     next();

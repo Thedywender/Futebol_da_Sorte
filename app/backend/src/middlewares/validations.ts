@@ -1,20 +1,25 @@
-import { Response, Request, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
-class ValidationsLogin {
-  static validateLogin(req: Request, res: Response, next: NextFunction): Response | void {
-    const login = req.body;
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(login.email)) {
-      return res.status(400).json({ message: 'All fields must be filled' });
-    }
-
-    if (login.password.length <= 6) {
-      return res.status(400).json({ message: 'All fields must be filled' });
+export default class Validations {
+  static validateLoginFields(req: Request, res: Response, next: NextFunction): Response | void {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ message: 'All fields must be filled' });
+    if (!regex.test(email) || password.length < 6) {
+      return res.status(401).json(
+        { message: 'Invalid email or password' },
+      );
     }
 
     next();
   }
-}
 
-export default ValidationsLogin;
+  static validateTeam(req: Request, res: Response, next: NextFunction): Response | void {
+    const { homeTeamId, awayTeamId } = req.body;
+    if (homeTeamId === awayTeamId) {
+      return res
+        .status(422).json({ message: 'It is not possible to create a match with two equal teams' });
+    }
+    next();
+  }
+}

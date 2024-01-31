@@ -4,29 +4,27 @@ import { ServiceResponse } from '../Interfaces/serviceResponse';
 import UserModel from '../models/userModel';
 
 type loginResponseData = { token: string };
-const message = 'All fields must be filled';
+const message1 = 'Invalid email or password';
 
 export default class UserService {
   constructor(private userModel = new UserModel()) {}
 
   async login(email: string, password: string): Promise<ServiceResponse<loginResponseData>> {
-    if (!email || !password) {
-      return { status: 'INVALID_DATA', data: { message } };
-    }
-
     const user = await this.userModel.findByEmail(email);
 
-    console.log(user);
+    if (!user) return { status: 'UNAUTHORIZED', data: { message: message1 } };
 
-    if (!user) return { status: 'INVALID_DATA', data: { message } };
+    if (!email || !password) {
+      return { status: 'UNAUTHORIZED', data: { message: message1 } };
+    }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return { status: 'INVALID_DATA', data: { message } };
+      return { status: 'UNAUTHORIZED', data: { message: message1 } };
     }
 
-    const payload = { sub: user.id, role: 'user', email: user.email };
+    const payload = { sub: user.id, role: user.role, email: user.email };
     const secret = process.env.JWT_SECRET ?? 'segredo';
 
     const token = jwt.sign(payload, secret, { expiresIn: '7d' });
