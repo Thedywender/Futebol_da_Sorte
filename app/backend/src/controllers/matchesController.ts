@@ -13,4 +13,10 @@ export default class matchesController {
     const matchFound = await this.matchesService.getFindMatchesFind(String(inProgress));
     return res.status(200).json(matchFound.data);
   }
+
+  async updateMatchFinish(req: Request, res: Response) {
+    const { id } = req.params;
+    const updateFinish = await this.matchesService.updateMatchFinish(Number(id));
+    return res.status(200).json(updateFinish.data);
+  }
 }

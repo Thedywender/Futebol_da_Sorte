@@ -14,4 +14,9 @@ export default class MatchesService {
     const filteredMatches = await this.matchesModel.findMatchesFind(query);
     return { status: 'SUCCESSFUL', data: filteredMatches };
   }
+
+  async updateMatchFinish(id: number): Promise<ServiceResponse<{ message: 'Finished' }>> {
+    await this.matchesModel.updateMatchFinish(id);
+    return { status: 'SUCCESSFUL', data: { message: 'Finished' } };
+  }
 }
