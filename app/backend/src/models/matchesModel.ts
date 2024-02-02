@@ -1,13 +1,10 @@
-import { IMatches, MatchesData } from '../Interfaces/Matches/IMatches';
+import { IMatches, MatchNoId, MatchesData } from '../Interfaces/Matches/IMatches';
 import SequelizeMatches from '../database/models/SequelizeMatches';
 import IMatchesModel from '../Interfaces/Matches/IMatchesModel';
 import SequelizeTeam from '../database/models/SequelizeTeam';
-import TeamService from '../services/teamService';
-import { ServiceResponse } from '../Interfaces/serviceResponse';
 
 export default class MatchesModel implements IMatchesModel {
   private model = SequelizeMatches;
-  private teamService = new TeamService();
 
   async findAll(): Promise<IMatches[]> {
     const dbData = await this.model.findAll({
@@ -42,20 +39,11 @@ export default class MatchesModel implements IMatchesModel {
     await this.model.update({ homeTeamGoals, awayTeamGoals }, { where: { id } });
   }
 
-  async createMatches(matchesdata: MatchesData):
-  Promise<ServiceResponse<IMatches>> {
+  async createMatches(matchesdata: MatchesData): Promise<MatchNoId<IMatches>> {
     const { homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals } = matchesdata;
-
-    const teamExist1 = await this.teamService.getTeamsById(Number(homeTeamId));
-    const teamExist2 = await this.teamService.getTeamsById(Number(awayTeamId));
-
-    if (!teamExist1 || !teamExist2) {
-      return {
-        status: 'NOT_FOUND', data: { message: 'There is no team with such id!' } };
-    }
 
     const creatematch = await this.model.create({
       homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals, inProgress: true });
-    return { status: 'CREATED', data: creatematch };
+    return creatematch;
   }
 }

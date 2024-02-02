@@ -14,10 +14,4 @@ export type MatchesData = {
   awayTeamGoals: number,
 };
 
-export type MatchNoId = {
-  homeTeamId: number,
-  homeTeamGoals: number,
-  awayTeamId: number,
-  awayTeamGoals: number,
-  inProgress: boolean,
-};
+export type MatchNoId<T> = Omit<T, 'id'>;

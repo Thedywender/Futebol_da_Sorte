@@ -17,6 +17,7 @@ class App {
     this.app.use('/teams', router.teamRouter);
     this.app.use('/login', router.loginRouter);
     this.app.use('/matches', router.matchesRouter);
+    this.app.use('/leaderboard', router.leaderboardRouter);
 
     // Não remova esse middleware de erro, mas fique a vontade para customizá-lo
     // Mantenha ele sempre como o último middleware a ser chamado
