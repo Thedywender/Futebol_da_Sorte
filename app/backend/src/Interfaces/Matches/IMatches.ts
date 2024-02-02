@@ -6,3 +6,18 @@ export type IMatches = {
   awayTeamGoals: number,
   inProgress: boolean,
 };
+
+export type MatchesData = {
+  homeTeamId: number,
+  awayTeamId: number,
+  homeTeamGoals: number,
+  awayTeamGoals: number,
+};
+
+export type MatchNoId = {
+  homeTeamId: number,
+  homeTeamGoals: number,
+  awayTeamId: number,
+  awayTeamGoals: number,
+  inProgress: boolean,
+};

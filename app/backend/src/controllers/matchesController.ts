@@ -19,4 +19,17 @@ export default class matchesController {
     const updateFinish = await this.matchesService.updateMatchFinish(Number(id));
     return res.status(200).json(updateFinish.data);
   }
+
+  async updateMatchId(req: Request, res: Response) {
+    const { id } = req.params;
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+    const updateId = await this.matchesService
+      .updateMatchId(Number(homeTeamGoals), Number(awayTeamGoals), Number(id));
+    return res.status(200).json(updateId.data);
+  }
+
+  async createMatches(req: Request, res: Response) {
+    const creatematch = await this.matchesService.createMatches(req.body);
+    return res.status(201).json(creatematch.data);
+  }
 }
