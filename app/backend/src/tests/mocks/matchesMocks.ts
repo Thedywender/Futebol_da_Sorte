@@ -10,90 +10,6 @@ const match = {
 const matchInProgress =
     [
         {
-          "id": 41,
-          "homeTeamId": 16,
-          "homeTeamGoals": 2,
-          "awayTeamId": 9,
-          "awayTeamGoals": 0,
-          "inProgress": true,
-          "homeTeam": {
-            "teamName": "São Paulo"
-          },
-          "awayTeam": {
-            "teamName": "Internacional"
-          }
-        },
-        {
-          "id": 42,
-          "homeTeamId": 6,
-          "homeTeamGoals": 1,
-          "awayTeamId": 1,
-          "awayTeamGoals": 0,
-          "inProgress": true,
-          "homeTeam": {
-            "teamName": "Ferroviária"
-          },
-          "awayTeam": {
-            "teamName": "Avaí/Kindermann"
-          }
-        },
-        {
-          "id": 43,
-          "homeTeamId": 11,
-          "homeTeamGoals": 0,
-          "awayTeamId": 10,
-          "awayTeamGoals": 0,
-          "inProgress": true,
-          "homeTeam": {
-            "teamName": "Napoli-SC"
-          },
-          "awayTeam": {
-            "teamName": "Minas Brasília"
-          }
-        },
-        {
-          "id": 44,
-          "homeTeamId": 7,
-          "homeTeamGoals": 2,
-          "awayTeamId": 15,
-          "awayTeamGoals": 2,
-          "inProgress": true,
-          "homeTeam": {
-            "teamName": "Flamengo"
-          },
-          "awayTeam": {
-            "teamName": "São José-SP"
-          }
-        },
-        {
-          "id": 45,
-          "homeTeamId": 5,
-          "homeTeamGoals": 1,
-          "awayTeamId": 3,
-          "awayTeamGoals": 1,
-          "inProgress": true,
-          "homeTeam": {
-            "teamName": "Cruzeiro"
-          },
-          "awayTeam": {
-            "teamName": "Botafogo"
-          }
-        },
-        {
-          "id": 46,
-          "homeTeamId": 4,
-          "homeTeamGoals": 1,
-          "awayTeamId": 12,
-          "awayTeamGoals": 1,
-          "inProgress": true,
-          "homeTeam": {
-            "teamName": "Corinthians"
-          },
-          "awayTeam": {
-            "teamName": "Palmeiras"
-          }
-        },
-        {
           "id": 47,
           "homeTeamId": 8,
           "homeTeamGoals": 1,
@@ -139,20 +55,6 @@ const matchInProgress =
           }
         },
         {
-          "id": 2,
-          "homeTeamId": 9,
-          "homeTeamGoals": 1,
-          "awayTeamId": 14,
-          "awayTeamGoals": 1,
-          "inProgress": false,
-          "homeTeam": {
-            "teamName": "Internacional"
-          },
-          "awayTeam": {
-            "teamName": "Santos"
-          }
-        },
-        {
           "id": 3,
           "homeTeamId": 4,
           "homeTeamGoals": 3,
@@ -168,9 +70,59 @@ const matchInProgress =
         },
     ]
 
+    const invalidTokenMessage = {
+        message: 'Token must be a valid token'
+    }
+
+    const matchErrorToken = "Bearer k4Fb9zV9VAq47yCnnJk078KQ5iC5db4"
+
+    const matchValidToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwiaWF0IjoxNzA2ODQ2MzkyLCJleHAiOjE3MDc0NTExOTJ9.fb3I6leoC1al60RVj8k3RD3ITEVsDRt2BFUpL9FXrws"
+
+    const matchNotFoundToken = { message: 'Token must be a valid token' };
+
+    const newErrorMatchBody = {
+        "id": 1,
+        "homeTeamId": 1999999,
+        "homeTeamGoals": 2,
+        "awayTeamId": 8,
+        "awayTeamGoals": 2,
+        "inProgress": true
+    }
+
+    const matchBodyInsert = {
+            "homeTeamId": 16,
+            "awayTeamId": 9, 
+            "homeTeamGoals": 2,
+            "awayTeamGoals": 2
+      }
+
+      const newMatch = {
+        "id": 1,
+        "homeTeamId": 16,
+        "homeTeamGoals": 2,
+        "awayTeamId": 8,
+        "awayTeamGoals": 2,
+        "inProgress": true
+    }
+
+    const newMatchBody = {
+        "homeTeamId": 16,
+        "awayTeamId": 8,
+        "homeTeamGoals": 2,
+        "awayTeamGoals": 2
+      }
+
 export {
     match,
     matchInProgress,
     matchesNotInProgress,
+    invalidTokenMessage,
+    matchErrorToken,
+    matchValidToken,
+    matchNotFoundToken,
+    newErrorMatchBody,
+    matchBodyInsert,
+    newMatch,
+    newMatchBody,
 
 }
