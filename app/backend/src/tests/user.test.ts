@@ -31,13 +31,13 @@ describe('Testes Login', () => {
 
     it('Testa o retorno com Email errado', async () => {
         const {status, body} = await await chai.request(app).post('/login').send(invalidEmail)
-        expect(status).to.equal(400);
+        expect(status).to.equal(401);
         expect(body).to.deep.equal({ message: 'Invalid email or password'})
       });
 
       it('Testa o retorno com a senha errada', async () => {
         const {status, body} = await await chai.request(app).post('/login').send(invalidpassword)
-        expect(status).to.equal(400);
+        expect(status).to.equal(401);
         expect(body).to.deep.equal({ message: 'Invalid email or password'})
       });
 
