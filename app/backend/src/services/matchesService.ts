@@ -27,24 +27,12 @@ export default class MatchesService {
   async updateMatchId(homeTeamGoals:
   number, awayTeamGoals: number, id: number): Promise<ServiceResponse<{ message: 'ok' }>> {
     await this.matchesModel.updateMatchId(homeTeamGoals, awayTeamGoals, id);
-    return { status: 'SUCCESSFUL', data: { message: 'ok' } };
+    return { status: ('SUCCESSFUL'), data: { message: 'ok' } };
   }
 
   async createMatches(
     matchesdata: MatchesData,
   ): Promise<ServiceResponse<MatchNoId<IMatches>>> {
-    const { homeTeamId, awayTeamId } = matchesdata;
-
-    const team1 = await this.teamService.getTeamsById(Number(homeTeamId));
-    const team2 = await this.teamService.getTeamsById(Number(awayTeamId));
-
-    if (team1.status === 'NOT_FOUND' || team2.status === 'NOT_FOUND' || !team1 || !team2) {
-      return { status: 'NOT_FOUND', data: { message: 'There is no team with such id!' } };
-    }
-
-    if (!homeTeamId || !awayTeamId) {
-      return { status: 'NOT_FOUND', data: { message: 'There is no team with such id!' } };
-    }
     const team = await this.matchesModel.createMatches(matchesdata);
     return { status: 'CREATED', data: team };
   }
