@@ -18,7 +18,7 @@ export default class UserService {
       return { status: 'UNAUTHORIZED', data: { message: message1 } };
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compareSync(password, user.password);
 
     if (!isPasswordValid) {
       return { status: 'UNAUTHORIZED', data: { message: message1 } };

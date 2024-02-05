@@ -13,8 +13,6 @@ loginRouter.post(
   (req: Request, res: Response) => userController.login(req, res),
 );
 
-// loginRouter.use(AuthMiddleware.authenticate);
-
 loginRouter.get(
   '/role',
   AuthMiddleware.authenticate,

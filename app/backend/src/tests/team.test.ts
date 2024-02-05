@@ -6,7 +6,7 @@ import chaiHttp = require('chai-http');
 import { app } from '../app';
 
 import SequelizeTeam from '../database/models/SequelizeTeam';
-import { team, teams } from './mocks/teamMocks'
+import { allTeams, team, teams } from './mocks/teamMocks'
 
 
 chai.use(chaiHttp);
@@ -14,15 +14,15 @@ chai.use(chaiHttp);
 const { expect } = chai;
 
 describe('Teste rota teams', () => {
- 
-  it('Test a função getAll', async function()  {
-    sinon.stub(SequelizeTeam, 'findAll').resolves(teams as any);
+
+  it('Testa se retorna todos os times', async function() {
+    sinon.stub(SequelizeTeam, 'findAll').resolves(allTeams as any);
 
     const { status, body } = await chai.request(app).get('/teams');
 
-    expect(status).to.equal(200);
-    expect(body).to.deep.equal(teams);
-  });
+    expect(status).to.be.equal(200);
+    expect(body).to.deep.equal(allTeams);
+  })
 
   it('Test a função getById', async function()  {
     sinon.stub(SequelizeTeam, 'findByPk').resolves(team as any);
