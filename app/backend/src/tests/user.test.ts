@@ -1,14 +1,16 @@
 import { App } from "../app";
 import * as sinon from 'sinon';
 import * as chai from 'chai'
+import * as jwt from 'jsonwebtoken';
 import { invalidEmail, userValid, validBodyLogin, noEmail, noPassword, 
-  invalidpassword, userReturnCall, invalidEmailPasswordMess, userInvalid, inválidfields, token } from "./mocks/user.mocks";
+  invalidpassword, userReturnCall, invalidEmailPasswordMess, userInvalid, inválidfields, invalidToken, validToken } from "./mocks/user.mocks";
 
 // @ts-ignore
 import chaiHttp = require('chai-http');
 import SequelizeUser from '../database/models/SequelizeUser';
 import UserModel from "../models/userModel";
 import * as bcrypt from 'bcryptjs';
+import { verify } from "crypto";
 
 chai.use(chaiHttp);
 
@@ -19,6 +21,9 @@ const { expect } = chai;
 describe('Testes Login', () => {
 
   describe('/login', () => {
+    beforeEach(() => {
+      sinon.restore();
+    });
 
     it('Testa o retorno caso não envie nenhuma informação', async () => {
       const {status, body} = await await chai.request(app).post('/login').send()
@@ -69,15 +74,20 @@ describe('Testes Login', () => {
       });
 
       it('Testa o retorno de um token inválido', async function() {
-        const { status, body } = await chai.request(app).get('/login/role').set('Authorization', token);
+        const { status, body } = await chai.request(app).get('/login/role').set('Authorization', invalidToken);
     
         expect(status).to.equal(401);
         expect(body).to.deep.equal({ message: 'Token must be a valid token' });
       });
+
+      it('Testa o retorno de um token válido', async function() {
+        sinon.stub(jwt, 'verify').callsFake(() => ({ role: 'admin' }));
+        const { status, body } = await chai.request(app).get('/login/role').set('Authorization', validToken);
+    
+        expect(status).to.equal(200);
+        expect(body).to.deep.equal({ role: 'admin' });
+      });
    
   });
 
-  afterEach(() => {
-    sinon.restore();
-  });
 });
