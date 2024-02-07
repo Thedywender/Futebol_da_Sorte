@@ -37,6 +37,18 @@ const leaderboardList =
     "efficiency": "100.00"
   },
   {
+    "name": "São Paulo",
+    "totalPoints": 6,
+    "totalGames": 2,
+    "totalVictories": 2,
+    "totalDraws": 0,
+    "totalLosses": 0,
+    "goalsFavor": 6,
+    "goalsOwn": 1,
+    "goalsBalance": 5,
+    "efficiency": "100.00"
+  },
+  {
     "name": "Grêmio",
     "totalPoints": 6,
     "totalGames": 2,
@@ -59,18 +71,6 @@ const leaderboardList =
     "goalsOwn": 0,
     "goalsBalance": 2,
     "efficiency": "100.00"
-  },
-  {
-    "name": "São Paulo",
-    "totalPoints": 4,
-    "totalGames": 2,
-    "totalVictories": 1,
-    "totalDraws": 1,
-    "totalLosses": 0,
-    "goalsFavor": 4,
-    "goalsOwn": 1,
-    "goalsBalance": 3,
-    "efficiency": "66.67"
   },
   {
     "name": "Internacional",

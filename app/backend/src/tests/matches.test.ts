@@ -1,5 +1,7 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
+import * as jwt from 'jsonwebtoken';
+import { ServiceResponse } from '../Interfaces/serviceResponse';
 // @ts-ignore
 import chaiHttp = require('chai-http');
 
@@ -11,13 +13,19 @@ import  {
     match,
     matchBodyInsert,
     matchErrorToken, 
-    matchInProgress, matchNotFoundToken, matchValidToken, matchesNotInProgress, newErrorMatchBody, newMatch, newMatchBody }  from './mocks/matchesMocks';
+    matchInProgress, matchNotFoundToken, matchValidToken, matchesInProgressFalse, messageErrorCreate, messageFinished, newErrorMatchBody, newMatch, newMatchBody, teamsGoalsUpdated }  from './mocks/matchesMocks';
+import TeamService from '../services/teamService';
+import MatchesService from '../services/matchesService';
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
 describe('Teste da rota matches', () => {
+
+    beforeEach(() => {
+        sinon.restore();
+    });
 
     it('teste da função getAll', async function() {
         sinon.stub(SequelizeMatches, 'findAll').resolves(match as any);
@@ -40,23 +48,12 @@ describe('Teste da rota matches', () => {
     });
 
     it('Teste da função getAllInProgress=False', async function() {
-        sinon.stub(SequelizeMatches, 'findAll').resolves(matchesNotInProgress as any);
+        sinon.stub(SequelizeMatches, 'findAll').resolves(matchesInProgressFalse as any);
 
         const { status, body } = await chai.request(app).get('/matches?inProgress=false');
 
         expect(status).to.equal(200);
-        expect(body).to.deep.equal(matchesNotInProgress);
-    });
-
-    it('Teste da função updateMatchFinish sem um token válido', async function() {
-        sinon.stub(SequelizeMatches, 'findByPk').resolves(match as any);
-        sinon.stub(SequelizeMatches, 'update').resolves(undefined);
-
-        const { status, body } = await chai.request(app)
-        .patch('/matches/2/finish').set('Authorization', matchErrorToken)
-
-        expect(status).to.equal(401);
-        expect(body).to.deep.equal(invalidTokenMessage);
+        expect(body).to.deep.equal(matchesInProgressFalse);
     });
 
     it('Teste da função updateMatchFinish com um token válido', async function() {
@@ -70,65 +67,87 @@ describe('Teste da rota matches', () => {
         expect(body).to.deep.equal(invalidTokenMessage);
     });
 
-    // it('testa se retorna um erro caso não encontre um matchFinish', async function() {
-    //     sinon.stub(SequelizeMatches, 'findByPk').resolves();
-    
-    //     const { status, body } = await chai.request(app)
-    //     .patch('/matches/1/finish')
-    //     .set('Authorization', matchValidToken);
-    
-    //     expect(status).to.equal(401);
-    //     expect(body).to.deep.equal(invalidTokenMessage);
-    //   });
+      it('Testa o validate Teams', async function() {
+        sinon.stub(TeamService.prototype, 'getTeamsById').resolves(undefined);
+        sinon.stub(jwt, 'verify');
 
-      it('testa se retorna um erro caso não encontrar token', async function() {
-        sinon.stub(SequelizeMatches, 'findByPk').resolves();
+        const body = {
+            homeTeamId: 1,
+            awayTeamId: 1,
+        }
+
+        const response = await chai.request(app).post('/matches').send(body).set('Authorization', matchValidToken);
+        expect(response.status).to.be.equal(422);
+        expect(response.body).to.deep.equal({message: 'It is not possible to create a match with two equal teams'});
+
+      })
+
+      it('Testa o validate Teams retorno de notFound', async function() {
+
+        sinon.stub(TeamService.prototype, 'getTeamsById').resolves({
+            status: 'NOT_FOUND',
+            data: { message: ''}
+        });
+        sinon.stub(jwt, 'verify');
+
+        const body = {
+            homeTeamId: 2,
+            awayTeamId: 1,
+        }
+
+        const response = await chai.request(app).post('/matches').send(body).set('Authorization', matchValidToken);
+        expect(response.status).to.be.equal(404);
+        expect(response.body).to.deep.equal({ message: 'There is no team with such id!' });
+      });
+
+      it('Deve criar um match', async function() {
+        sinon.stub(SequelizeMatches, 'create').resolves(newMatch as SequelizeMatches);
+        sinon.stub(jwt, 'verify');
+    
     
         const { status, body } = await chai.request(app)
-        .patch('/matches/2')
+        .post('/matches')
+        .send(newMatchBody)
         .set('Authorization', matchValidToken);
     
-        expect(status).to.equal(401);
-        expect(body).to.deep.equal(matchNotFoundToken);
+        expect(body).to.deep.equal(match);
+        expect(status).to.equal(201);
       });
 
-      it('testa se não encontra um matchById ', async function() {
-        sinon.stub(SequelizeMatches, 'findByPk').resolves(newErrorMatchBody as any);
-    
-    
+      it('Testa se retorna um erro tentando criar uma partida com time inválido', async function() {
+        sinon.stub(SequelizeMatches, 'create').resolves(messageErrorCreate as any);
+        sinon.stub(jwt, 'verify');
         const { status, body } = await chai.request(app)
-        .post('/matches/2').send(matchBodyInsert).set('Authorization', matchValidToken);
+            .post('/matches')
+            .set('Authorization', matchValidToken)
+            .send(newErrorMatchBody);
     
         expect(status).to.equal(404);
-        expect(body).to.deep.equal({});
+        expect(body).to.deep.equal(messageErrorCreate);
       });
 
-    //   it('Deve criar um match', async function() {
-    //     sinon.stub(SequelizeMatches, 'create').resolves(newMatch as any);
-    
-    //     sinon.stub(SequelizeMatches, 'update').resolves(undefined);
-    
-    //     const { status, body } = await chai.request(app)
-    //     .post('/matches')
-    //     .send(newMatchBody)
-    //     .set('Authorization', matchValidToken);
-    
-    //     expect(body).to.deep.equal(match);
-    //     expect(status).to.equal(201);
-    //   });
+      it('deve finalizar um partida', async () => {
+        sinon.stub(SequelizeMatches, 'update').resolves(messageFinished as any);
+        sinon.stub(jwt, 'verify');
+        const { status, body } = await chai.request(app).patch('/matches/1/finish').set('Authorization', matchValidToken).send();
 
-    //   it('Testa se retorna um erro tentando criar uma partida com time inválido', async function() {
-    //     const { status, body } = await chai.request(app)
-    //     .post('/matches')
-    //     .send(newErrorMatchBody)
-    //     .set('Authorization', matchValidToken);
+        expect(status).to.equal(200);
+        expect(body).to.deep.equal(messageFinished);
+    });
+
+    it('Testa se é possivel atualizar uma partida', async function() {
+        sinon.stub(SequelizeMatches, 'update').resolves({ message: 'ok'} as any);
+        sinon.stub(jwt, 'verify');
+
+        const { status, body } = await chai.request(app).patch('/matches/1').set('Authorization', matchValidToken).send(teamsGoalsUpdated);
+
+        expect(status).to.equal(200);
+        expect(body).to.deep.equal({message: 'ok'});
+    })
     
-    //     expect(status).to.equal(401);
-    //     expect(body).to.deep.equal({ "message": "It is not possible to create a match with two equal teams" });
-    //   });
 
     afterEach(sinon.restore);
-})
+});
 
 // case 'SUCCESSFUL': return 200;
 // case 'CREATED': return 201;
@@ -137,3 +156,17 @@ describe('Teste da rota matches', () => {
 // case 'CONFLICT': return 409;
 // case 'UNAUTHORIZED': return 401;
 // default: return 
+
+
+/* mocks req, res;
+//         const req = {
+//             body:{
+//             homeTeamId: 1,
+//             awayTeamId: 1,
+//         }
+// }
+
+        // const res  = {
+        //     status: sinon.stub(),
+        //     json: sinon.stub(),
+        // };*/

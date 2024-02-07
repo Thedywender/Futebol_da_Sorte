@@ -39,7 +39,7 @@ const matchInProgress =
         }
       ]
 
-      const matchesNotInProgress = [
+      const matchesInProgressFalse = [
         {
           "id": 1,
           "homeTeamId": 16,
@@ -76,7 +76,7 @@ const matchInProgress =
 
     const matchErrorToken = "Bearer k4Fb9zV9VAq47yCnnJk078KQ5iC5db4"
 
-    const matchValidToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwiaWF0IjoxNzA2ODQ2MzkyLCJleHAiOjE3MDc0NTExOTJ9.fb3I6leoC1al60RVj8k3RD3ITEVsDRt2BFUpL9FXrws"
+    const matchValidToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwiaWF0IjoxNzA3MjI0NjM4LCJleHAiOjE3MDc4Mjk0Mzh9.b3u-pCZytNew6Jt2vK7FIWD5-Jkhcl07kF22m0nMXkE"
 
     const matchNotFoundToken = { message: 'Token must be a valid token' };
 
@@ -112,10 +112,23 @@ const matchInProgress =
         "awayTeamGoals": 2
       }
 
+      const messageErrorCreate = {
+        message: 'There is no team with such id!'
+      }
+
+      const messageFinished = {
+        message: 'Finished'
+      }
+
+      const teamsGoalsUpdated = {
+          "homeTeamGoals": 3,
+          "awayTeamGoals": 1
+        }
+
 export {
     match,
     matchInProgress,
-    matchesNotInProgress,
+    matchesInProgressFalse,
     invalidTokenMessage,
     matchErrorToken,
     matchValidToken,
@@ -124,5 +137,7 @@ export {
     matchBodyInsert,
     newMatch,
     newMatchBody,
-
+    messageErrorCreate,
+    messageFinished,
+    teamsGoalsUpdated,
 }
