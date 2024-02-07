@@ -10,17 +10,17 @@ import { goalsFavorHome, goalsOwnHome, totalDrawsHome,
   efficiencyHome,
   totalVictoriesHome,
   sortTeams,
-//   totalPointsAway,
-//   totalVictoriesAway,
-//   totalDrawsAway,
-//   totalLosesAway,
-//   goalsFavorAway,
-//   goalsOwnAway,
-//   goalsBalanceAway,
-//   efficiencyAway,
-//   totalGamesAway,
-//   efficiencyTotal,
-//   totalPointsAll,
+  totalPointsAway,
+  totalVictoriesAway,
+  totalDrawsAway,
+  totalLosesAway,
+  goalsFavorAway,
+  goalsOwnAway,
+  goalsBalanceAway,
+  efficiencyAway,
+  totalGamesAway,
+  // efficiencyTotal,
+  // totalPointsAll,
 } from '../utils/leaderboardeCalc';
 
 export default class LeaderboardSevice {
@@ -46,5 +46,24 @@ export default class LeaderboardSevice {
     }));
     sortTeams(homeMatches);
     return { status: 'SUCCESSFUL', data: homeMatches };
+  }
+
+  async getAllLeaderboardAway(): Promise<ServiceResponse<LeaderboardType[]>> {
+    const teams = await this.teamsModel.findAll();
+    const match = await this.matchModel.findMatchesFind('false');
+    const awayMatches = teams.map((team) => ({
+      name: team.teamName,
+      totalPoints: totalPointsAway(team.id, match),
+      totalGames: totalGamesAway(team.id, match),
+      totalVictories: totalVictoriesAway(team.id, match),
+      totalDraws: totalDrawsAway(team.id, match),
+      totalLosses: totalLosesAway(team.id, match),
+      goalsFavor: goalsFavorAway(team.id, match),
+      goalsOwn: goalsOwnAway(team.id, match),
+      goalsBalance: goalsBalanceAway(team.id, match),
+      efficiency: efficiencyAway(team.id, match),
+    }));
+    sortTeams(awayMatches);
+    return { status: 'SUCCESSFUL', data: awayMatches };
   }
 }

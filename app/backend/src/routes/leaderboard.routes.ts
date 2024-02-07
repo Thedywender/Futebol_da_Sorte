@@ -7,4 +7,6 @@ const leaderboardRouter = Router();
 leaderboardRouter.get('/home', (req: Request, res: Response) =>
   leaderboardeController.getAllleaderboardHome(req, res));
 
+leaderboardRouter.get('/away', (req: Request, res: Response) =>
+  leaderboardeController.getAllLeaderboardAway(req, res));
 export default leaderboardRouter;
