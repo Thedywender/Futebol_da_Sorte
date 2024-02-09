@@ -10,9 +10,11 @@ const invalidpassword = {
     password: '9009',
 }
 
-const validToken = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwiaWF0IjoxNzA3MTQwMDUwLCJleHAiOjE3MDc3NDQ4NTB9.qOflIe7s1Nw-P9I5xRECCtXTNPoJ5xQh2aTXuO0or6A'
+const validToken = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwiaWF0IjoxNzA3MTQwMDUwLCJleHAiOjE3MDc3NDQ4NTB9.qOflIe7s1Nw-P9I5xRECCtXTNPoJ5xQh2aTXuO0or6A';
 
 const invalidToken = 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwiaWF0IjoxNzA2ODEwOTExLCJleHAiOjE3MDc0MTU3MTF9.bsVn9Z46Jisyym3JKuclZe6a0iQHpMOD6Ywi1ss4hrU';
+
+const noToken = { message: 'Token not found'};
 
 const invalidEmail = {
     email: 'using.user.paranaue',
@@ -63,4 +65,5 @@ export {
     userInvalid,
     inválidfields,
     invalidToken,
+    noToken,
 }
